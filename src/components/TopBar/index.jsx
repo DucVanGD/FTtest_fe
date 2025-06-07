@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
-import { useLocation, useParams } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { getAPI } from "../../lib/restfullapi";
-import { getCookie } from "../../lib/cookie";
+import { deleteCookie, getCookie } from "../../lib/cookie";
 import './styles.css';
 
 function TopBar({userId}) {
@@ -10,6 +10,13 @@ function TopBar({userId}) {
   const fullname = getCookie('fullname');
   const [userName, setUserName] = useState("");
   const user = useParams();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    deleteCookie('userId');
+    deleteCookie('fullname');
+    navigate('/login');
+  }
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,6 +51,7 @@ function TopBar({userId}) {
         </Typography>
 
         <Box className="Box">
+          <Button color="error" onClick={handleLogout}>Logout</Button>
           <Typography variant="body1">
             {appContext || "Home"}
           </Typography>

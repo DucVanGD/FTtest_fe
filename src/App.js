@@ -13,13 +13,12 @@ import { getCookie } from './lib/cookie';
 import LoginRegister from './components/LoginRegister';
 
 const App = () => {
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(getCookie('userId'));
 
   return (
     <Router>
-      {!userId ? (
-        <LoginRegister onLoginSuccess={() => setUserId(getCookie('userId'))} />
-      ) : (
+      {!userId && <LoginRegister onLoginSuccess={() => setUserId(getCookie('userId'))} />}
+      {userId && (
         <Box>
           <TopBar userId={userId} />
 
@@ -33,6 +32,7 @@ const App = () => {
                 <Route path="/users/:userId" element={<UserDetail />} />
                 <Route path="/photos/:userId" element={<UserPhotos />} />
                 <Route path="/users" element={<UserList />} />
+                <Route path="/login" element={<LoginRegister  onLoginSuccess={() => setUserId(getCookie('userId'))}/>}/>
               </Routes>
             </Box>
           </Box>
