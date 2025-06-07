@@ -17,7 +17,7 @@ function UserList () {
     useEffect(()=>{
       const fetchUser = async ()=>{
         let data = await getAPI('user/list');
-        data = data.filter((item) => item._id !== getCookie("userId")) 
+        //data = data.filter((item) => item._id !== getCookie("userId")) 
         setUsers(data)
       }
       fetchUser()
@@ -32,7 +32,7 @@ function UserList () {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
-          marginLeft: '250px',
+          marginLeft: '10px',
         }}
       >
         <List component="nav" sx={{ width: '100%' }}>

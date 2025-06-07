@@ -1,70 +1,52 @@
-import React, {useState} from "react";
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import { Box, Tab, Tabs } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { useLocation, useParams } from "react-router-dom";
+import { getAPI } from "../../lib/restfullapi";
+import { getCookie } from "../../lib/cookie";
+import './styles.css';
 
-import "./styles.css";
-import {  useNavigate} from "react-router-dom";
-import { getCookie, deleteCookie } from "../../lib/cookie";
-
-/**
- * Define TopBar, a React component of Project 4.
- */
-
-function TopBar({onLogout}) {
-  const navigate = useNavigate();
-  const [tabValue, setTabValue] = useState(0);
-
-  const userId = getCookie('userId')
+function TopBar({userId}) {
+  const location = useLocation();
   const fullname = getCookie('fullname');
+  const [userName, setUserName] = useState("");
+  const user = useParams();
 
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue); 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user) {
+        setUserName("");
+        return;
+      }
+      try {
+        const data = await getAPI(`user/${user.userId}`);
+        setUserName(`${data.first_name}`);
+      } catch (err) {
+        console.error("Failed to fetch user in TopBar:", err);
+        setUserName(""); 
+      }
+    };
 
-    if (newValue === 0) {
-      navigate('/')
-    } else if (newValue === 1){
-      navigate(`/users/${userId}`, { state: { userId } });
-    } else if (newValue === 2) {
-      navigate(`/photos/${userId}`, { state: { userId } });
-    } else if (newValue === 3) {
-      navigate(`/users`, { state: { userId } });
-    } else if (newValue === 4) {
-      deleteCookie('userId');
-      deleteCookie('fullname');
-      if (onLogout) onLogout(); 
-      navigate('/login');
-    }
-  };
+    fetchUser();
+  }, [userId]); 
+
+  let appContext = "";
+  if (location.pathname.includes("/users/")) {
+    appContext = userName;
+  } else if (location.pathname.includes("/photos")) {
+    appContext = `Photos of ${userName}`;
+  }
 
   return (
-    <AppBar className="toolbar-appbar" position="sticky" sx={{ height: "95%", backgroundColor: "rgb(110, 134, 171)", display: "flex", flexDirection: "column" }}>
-      <Typography variant="h6" className="toolbar-title">{`Hi, ${fullname}`}</Typography>
-      <Toolbar>
-        <Box sx={{ flexGrow: 1, display: "flex"}}>
-          <Tabs
-            orientation="vertical"
-            value={tabValue}
-            onChange={handleChange}
-            textColor="inherit"
-            variant="fullWidth"
-            indicatorColor="primary"
-            TabIndicatorProps={{
-              style: { backgroundColor: "white", left: 0 },
-            }}
-            sx={{width: 200, height: "100%", display: "flex", flexDirection: "column", alignItems: "flex-start"}}
-          >
-            <Tab label="Home" />
-            <Tab label="User Detail" />
-            <Tab label="My Photos" />
-            <Tab label="Friends"/>
-            <Tab label="Log out" 
-              sx={{
-              backgroundColor: "#cc0000", '&:hover': {
-              backgroundColor: "red", 
-              color: "white"
-            }}}/>
-          </Tabs>
-            
+    <AppBar position="static" className="AppBar">
+      <Toolbar className="Toolbar">
+        <Typography variant="h6" className="Typography">
+          {`Hi, ${fullname}`}
+        </Typography>
+
+        <Box className="Box">
+          <Typography variant="body1">
+            {appContext || "Home"}
+          </Typography>
         </Box>
       </Toolbar>
     </AppBar>

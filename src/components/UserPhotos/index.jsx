@@ -63,7 +63,7 @@ function UserPhotos() {
   }, [photoOfUser]);
 
   return (
-    <Box sx={{ ml: '250px', pr: 2 }}>
+    <Box sx={{ ml: '10px', pr: 2 }}>
       {user.userId === getCookie("userId") && <UploadPhoto onUploadPhoto={handleUploadPhoto} />}
       {photoOfUser.length > 0 ? (
         photoOfUser.map(photo => (

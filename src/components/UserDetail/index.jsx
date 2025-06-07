@@ -3,6 +3,7 @@ import {ImageListItem, List, ListItem, ListItemText, Typography, Box} from "@mui
 
 import {Link, useParams} from "react-router-dom";
 import {getAPI, postAPI} from "../../lib/restfullapi";
+import TopBar from "../TopBar";
 
 
 function UserDetail() {
@@ -27,7 +28,7 @@ function UserDetail() {
       };
 
       fetchUser();
-    }, []);
+    }, [user.userId]);
 
     return (
         <>
@@ -38,7 +39,7 @@ function UserDetail() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-start',
-            marginLeft: '250px',
+            marginLeft: '10px',
             }}>
             <Box sx={{ maxWidth: 600, width: '100%' }}>
             <Typography variant="body1" component="div" sx={{ width: '100%' }} >
